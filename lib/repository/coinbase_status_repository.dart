@@ -44,15 +44,15 @@ class CoinbaseStatusRepository {
   WebSocketChannel? _channel;
   bool _isDisposed = false;
   bool _isSubscribed = false;
-  // final StreamController<Map<String, dynamic>> _streamController =
-  // StreamController<Map<String, dynamic>>();
+
+  final StreamController<Map<String, dynamic>> _streamController = StreamController<Map<String, dynamic>>();
   // Stream<Map<String, dynamic>> get stream => _streamController.stream;
 
   void _init() {
     // 따라서 일단 연결하면 해당 상태의 이 특정 채널을 구독하게 됩니다.
     _channel = _coinbaseWebsocket.connect();
     _subscribeToStatus();
-    // _listen();
+    _listen();
   }
 
   void _subscribeToStatus() {
@@ -90,32 +90,31 @@ class CoinbaseStatusRepository {
   //   _channel?.sink.add(message);
   // }
 
-  // void _listen() {
-  //   if (_isDisposed) return;
-  //
-  //   _channel?.stream.listen(
-  //         (data) {
-  //       final jsonData = jsonDecode(data) as Map<String, dynamic>;
-  //       debugPrint('CoinbaseStatusRepository: $jsonData');
-  //       _streamController.add(jsonData);
-  //     },
-  //     onError: (e) {
-  //       _reconnect();
-  //     },
-  //   );
-  // }
+  void _listen() {
+    if (_isDisposed) return;
 
-  // void _reconnect() {
-  //   if (_isDisposed) return;
-  //
-  //   Future.delayed(const Duration(seconds: 3), () {
-  //     _init();
-  //   });
-  // }
+    // null이 아닌 경우 여기에서 얻는 스트림과 내가 수신해야 하는 스트림에서
+    // 우리가 받는 데이터. 그래서 이것은 우리가 서버로부터 받는 데이터가 될 것입니다.
+    _channel?.stream.listen((data) {
+      final jsonData = jsonDecode(data) as Map<String, dynamic>;
+      debugPrint('CoinbaseStatusRepository: $jsonData');
+      _streamController.add(jsonData);
+    }, onError: (e) {
+      // _reconnect();
+    });
+  }
 
-  // void dispose() {
-  //   _isDisposed = true;
-  //   _channel?.sink.close();
-  //   _streamController.close();
-  // }
+// void _reconnect() {
+//   if (_isDisposed) return;
+//
+//   Future.delayed(const Duration(seconds: 3), () {
+//     _init();
+//   });
+// }
+
+// void dispose() {
+//   _isDisposed = true;
+//   _channel?.sink.close();
+//   _streamController.close();
+// }
 }
