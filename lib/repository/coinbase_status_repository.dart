@@ -42,34 +42,36 @@ class CoinbaseStatusRepository {
   }
 
   WebSocketChannel? _channel;
-  // bool _isDisposed = false;
-  // bool _isSubscribed = false;
+  bool _isDisposed = false;
+  bool _isSubscribed = false;
   // final StreamController<Map<String, dynamic>> _streamController =
   // StreamController<Map<String, dynamic>>();
   // Stream<Map<String, dynamic>> get stream => _streamController.stream;
 
   void _init() {
+    // 따라서 일단 연결하면 해당 상태의 이 특정 채널을 구독하게 됩니다.
     _channel = _coinbaseWebsocket.connect();
-    // _subscribeToStatus();
+    _subscribeToStatus();
     // _listen();
   }
 
-  // void _subscribeToStatus() {
-  //   // check if we are not already disposed
-  //   if (_isDisposed || _isSubscribed) return;
-  //
-  //   final message = jsonEncode({
-  //     "type": "subscribe",
-  //     "channels": [
-  //       {"name": "status"}
-  //     ],
-  //   });
-  //
-  //   // Subscribe to status
-  //   _isSubscribed = true;
-  //   // Send subscription message to websocket
-  //   _channel?.sink.add(message);
-  // }
+  void _subscribeToStatus() {
+    // check if we are not already disposed
+    if (_isDisposed || _isSubscribed) return;
+
+    // 왜냐하면 이것을 인코딩하여 WebSocket을 보내야 하기 때문입니다.
+    final message = jsonEncode({
+      "type": "subscribe",
+      "channels": [
+        {"name": "status"}
+      ],
+    });
+
+    // Subscribe to status
+    _isSubscribed = true;
+    // Send subscription message to websocket
+    _channel?.sink.add(message);
+  }
 
   // void _unSubscribeToStatus() {
   //   // check if we are not already disposed
