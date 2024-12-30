@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_websocket/ui/screen/coin_status_screen.dart';
 
 void main() {
   runApp(
@@ -17,9 +18,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+        // body: Center(
+        //   child: Text('Hello World!'),
+        // ),
+        body: CoinStatusScreen(),
       ),
     );
   }
